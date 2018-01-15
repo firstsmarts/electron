@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>移动应用代码加固工具</title>
+    <style>
+        body,
+        html,
+        div,
+        p,
+        h3 {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-weight: normal;
+            color: #333;
+            font-family: 'Microsoft Yahei', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .clearfix:after {
+            content: '';
+            display: table;
+            visibility: hidden;
+            clear: both;
+        }
+
+        .main {
+            width: 800px;
+            margin: 0 auto;
+            height: 300px;
+        }
+
+        .title {
+            font-size: 30px;
+            text-align: center;
+            color: #1890ff;
+            line-height: 80px;
+        }
+
+        .subdesc {
+            font-size: 12px;
+            text-align: center;
+            width: 60%;
+            margin: 0 auto;
+            color: #747474;
+            letter-spacing: 2px;
+            line-height: 22px;
+        }
+
+        .subdesc:last-of-type {
+            margin-bottom: 40px;
+        }
+
+        .uploadbox,
+        .resultbox {
+            background: #f3f3f3;
+            height: 300px;
+            padding-top: 26px;
+            border-radius: 6px;
+            border: 1px solid rgb(216, 216, 216);
+            box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+        }
+
+        .android {
+            height: 80px;
+            display: block;
+            margin: 0 auto 26px auto;
+        }
+
+        .upbtn {
+            width: 140px;
+            height: 36px;
+            border: 1px solid #1890ff;
+            margin: 0 auto;
+            border-radius: 6px;
+            position: relative;
+            text-align: center;
+            line-height: 36px;
+            color: #1890ff;
+            margin-bottom: 56px;
+            font-size: 14px;
+        }
+
+        .upbtn.disabled {
+            border: 1px solid #dfdfdf;
+            color: #999;
+        }
+
+        .upfile {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        .resultbox {
+            height: 300px;
+            display: none;
+            position: relative;
+        }
+
+        .fileicon {
+            float: left;
+            width: 24%;
+            height: 100%;
+            position: relative;
+            background: url(./static/file.png) no-repeat center 26px;
+            background-size: 75px;
+        }
+
+        .fileinfo {
+            float: right;
+            width: 76%;
+            height: 100%;
+            padding-top: 26px;
+        }
+
+        .filetype {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 98px;
+            color: #fff;
+            font-weight: 700;
+            line-height: 26px;
+            font-size: 12px;
+        }
+
+        .filetitle {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .group {
+            font-size: 13px;
+            line-height: 26px;
+            padding-right: 26px;
+        }
+
+        .label {
+            display: inline-block;
+            width: 80px;
+            color: #999;
+        }
+
+        .loading {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 43px;
+            height: 43px;
+            background: url(./static/loading.gif) no-repeat center center;
+            background-size: contain;
+            display: none;
+        }
+
+        .btns {
+            text-align: right;
+            padding-right: 26px;
+            margin-top: 16px;
+        }
+
+        .btns span {
+            display: inline-block;
+            padding: 5px 12px;
+            font-size: 14px;
+            background: #1890ff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .btns span:hover {
+            background: #40a9ff;
+        }
+
+        .btns span.doing {
+            padding-left: 26px;
+            background: url(./static/loading.gif) no-repeat 4px center #40a9ff;
+            background-size: 18px;
+        }
+        .btns span.doing:before{
+            content: '';
+            position: absolute;
+            left: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border-top: 1px solid #fff;
+            animation: circle 1s infinite;
+        }
+        @keyframes circle{
+            from{
+                transform: rotate(0)
+            }
+            to{
+                transform: rotate(360deg)
+            }
+        }
+        .back {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            right: 16px;
+            top: 0;
+            cursor: pointer;
+            background-size: 30px;
+            text-align: center;
+            line-height: 50px;
+            color: #1890ff;
+            font-size: 14px;
+        }
+
+        .downframe {
+            display: none;
+        }
+        .rights{
+            letter-spacing: 0;
+            width: 48%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <h3 class="title">
+            <span>AntiyProtector</span>
+        </h3>
+        <div class="loading">
+
+        </div>
+        <p class="subdesc">提供代码混淆与综合加固两种不同的APK文件保护方案，操作便捷</p>
+        <p class="subdesc">助力开发者对抗破解反编译。</p>
+        <div class="uploadbox">
+            <img class="android" src="./static/android.png" alt="">
+            <div class="upbtn">
+                <input type="file" class="upfile" name="" id="">
+                <span class="uptxt">上传文件</span>
+            </div>
+            <p class="subdesc rights">Copyright © 2017 Wuhan Antiy Information Technology Co.,Ltd. All Rights Reserved</p>
+        </div>
+        <div class="resultbox clearfix"></div>
+
+    </div>
+
+    <script src="./static/jquery-1.11.1.min.js"></script>
+    <script>
+        var uploading = false
+
+        $('.upbtn,.upfile').on('click', function (e) {
+            if (uploading) {
+                e.preventDefault()
+            }
+        })
+
+        function disable() {
+            uploading = true
+            $('.upbtn').addClass('disabled')
+            $('.uptxt').html('上传中...')
+        }
+
+        function enable() {
+            uploading = false
+            $('.upbtn').removeClass('disabled')
+            $('.uptxt').html('上传文件')
+        }
+
+        $('.upfile').on('change', function () {
+            disable()
+            if (!this.value) {
+                return
+            }
+            var file = this.files[0]
+            var data = new FormData()
+            data.append('file', file)
+            $.ajax({
+                method: 'post',
+                url: '/upload',
+                data: data,
+                processData: false,
+                contentType: false,
+                beforeSend: function () {
+                    $('.loading').fadeIn()
+                },
+                success: function (res) {
+                    $('.loading').fadeOut()
+                    if (!res.status) {
+                        var r = res.data
+                        var html = `<div class="fileicon">
+                                        <p class="filetype">${r.type}</p>
+                                    </div>
+                                    <span class="back">返回</span>
+                                    <div class="fileinfo">
+                                        <h3 class="filetitle">${r.type == 'UNKNOWN' ? '不支持的文件类型' : '读取完毕'}</h3>
+                                        <div class="group">
+                                            <span class="label">MD5</span>
+                                            <span class="content">${r.md5}</span>
+                                        </div>
+                                        <div class="group">
+                                            <span class="label">文件名</span>
+                                            <span class="content">${r.filename}</span>
+                                        </div>
+                                        <div class="group">
+                                            <span class="label">文件大小</span>
+                                            <span class="content">${(r.filesize / 1024).toFixed(2) + 'KB'}</span>
+                                        </div>
+                                        <div class="group">
+                                            <span class="label">上传时间</span>
+                                            <span class="content">${r.upload_time}</span>
+                                        </div>
+                                        <div class="btns">
+                                        ${r.type == 'APK' ? `
+                                            <span class="complex">综合加固</span>
+                                            <span class="obfuscate">代码混淆</span>
+                                            ` : ''}
+                                        </div>
+                                    </div>`
+                        $('.uploadbox').hide()
+                        $(html).appendTo('.resultbox')
+                        $('.resultbox').fadeIn()
+                    }
+                    console.log(res)
+                }
+            })
+        })
+
+
+        function getFile(url, file, $that,title) {
+            if ($('.doing').length) {
+                return
+            }
+            var oldHtml = $that.html()
+            $that.html(title)
+            $that.addClass('doing')
+            $.ajax({
+                method: 'get',
+                url: url,
+                success: function (res) {
+                    $that.removeClass('doing')
+                    $that.html(oldHtml)
+                    if (!res.status) {
+                        $('.downframe').remove()
+                        $('<iframe src="' + file + '?md5=C2A11518228453861F29DD87C2C72229" frameborder="0" class="downframe"></iframe>').appendTo('body')
+                    }
+                }
+            })
+        }
+
+
+        $('.resultbox').on('click', '.complex', function () {
+            getFile('/do_complex', '/complex', $(this),'加固中')
+        })
+        $('.resultbox').on('click', '.obfuscate', function () {
+            getFile('/do_obfuscate', '/obfuscate', $(this),'混淆中')
+        })
+
+        $('.resultbox').on('click', '.back', function () {
+            $('.resultbox').hide().empty()
+            $('.uploadbox').fadeIn()
+            $('.upfile').val('')
+            enable()
+        })
+        $(document).on('contextmenu',function(e){e.preventDefault()})
+    </script>
+</body>
+
+</html>
